@@ -16,6 +16,8 @@ const navKeys = [
   { to: 'https://www.facebook.com/mrbonh', key: 'contact', icon: Users },
 ] as const
 
+const appIconUrl = `${import.meta.env.BASE_URL}app-icon.png`
+
 function AppShell() {
   const { t } = useTranslation()
 
@@ -23,7 +25,7 @@ function AppShell() {
     <div className="shell">
       <header className="app-header">
         <Link className="app-header__brand" to="/">
-          <img className="app-header__icon" src="/app-icon.png" alt="" />
+          <img className="app-header__icon" src={appIconUrl} alt="" />
           <span>{t('appName')}</span>
         </Link>
       </header>

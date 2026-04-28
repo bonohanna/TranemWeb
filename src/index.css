@@ -841,41 +841,6 @@ button {
   color: var(--team-purple) !important;
 }
 
-.page-stack,
-.panel {
-  display: grid;
-  gap: 12px;
-  padding: 16px;
-}
-
-.panel {
-  border-radius: 20px;
-  background: var(--bg-card);
-}
-
-.placeholder-screen {
-  display: grid;
-  min-height: calc(100vh - 141px);
-  place-content: center;
-  gap: 8px;
-  padding: 24px;
-  text-align: center;
-}
-
-.placeholder-screen h1,
-.placeholder-screen p {
-  margin: 0;
-}
-
-.placeholder-screen h1 {
-  color: var(--white);
-  font-size: 28px;
-}
-
-.placeholder-screen p {
-  color: var(--nav-inactive);
-}
-
 @media (min-width: 900px) {
   .shell {
     direction: ltr;
@@ -1103,11 +1068,6 @@ button {
     margin: 0;
   }
 
-  .placeholder-screen {
-    min-height: calc(100vh - 126px);
-    border-radius: 32px;
-    background: var(--bg-card);
-  }
 }
 
 @media (max-width: 420px) {

@@ -1,18 +1,7 @@
 import initSqlJs, {
   type Database,
-  type QueryExecResult,
   type SqlJsStatic,
 } from 'sql.js'
-
-export interface CatalogSummary {
-  songs: number
-  albums: number
-  singers: number
-  poets: number
-  composers: number
-  distributers: number
-  featuredSong: string | null
-}
 
 export interface SongListItem {
   id: number
@@ -140,21 +129,6 @@ function normalizeSearch(value: string): string {
     .replace(/[أإآ]/g, 'ا')
 }
 
-function firstResult(db: Database, query: string): QueryExecResult | undefined {
-  return db.exec(query)[0]
-}
-
-function readNumber(db: Database, query: string): number {
-  const result = firstResult(db, query)
-  return Number(result?.values?.[0]?.[0] ?? 0)
-}
-
-function readString(db: Database, query: string): string | null {
-  const result = firstResult(db, query)
-  const value = result?.values?.[0]?.[0]
-  return typeof value === 'string' ? value : null
-}
-
 function asNumber(value: unknown): number {
   return Number(value ?? 0)
 }
@@ -263,23 +237,6 @@ function advancedSearchWhereClause() {
       AND (:singerName = '' OR si.name_norm LIKE :singerNameLike)
       AND (:albumName = '' OR a.name_norm LIKE :albumNameLike)
   `
-}
-
-export async function getCatalogSummary(): Promise<CatalogSummary> {
-  const db = await getCatalogDatabase()
-
-  return {
-    songs: readNumber(db, 'SELECT COUNT(*) FROM songs'),
-    albums: readNumber(db, 'SELECT COUNT(*) FROM albums'),
-    singers: readNumber(db, 'SELECT COUNT(*) FROM singers'),
-    poets: readNumber(db, 'SELECT COUNT(*) FROM poets'),
-    composers: readNumber(db, 'SELECT COUNT(*) FROM composers'),
-    distributers: readNumber(db, 'SELECT COUNT(*) FROM distributers'),
-    featuredSong: readString(
-      db,
-      "SELECT name FROM songs WHERE name IS NOT NULL AND name != '' ORDER BY is_favorite DESC, play_count DESC, name ASC LIMIT 1",
-    ),
-  }
 }
 
 export async function searchSongs(

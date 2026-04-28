@@ -1,55 +1,66 @@
-# TranemWeb
+# Tranem Web
 
-`TranemWeb` is the browser rewrite scaffold for the Android app in `../Tranem`.
+Browser version of the Android app in `../Tranem`, built with React, TypeScript, Vite, `sql.js`, and the Android SQLite catalog.
 
-The project is intentionally set up around the real migration constraints:
+Live site: https://bonohanna.github.io/TranemWeb/
 
-- React + TypeScript + Vite shell
-- Arabic-first RTL UI with English toggle
-- SQLite-first catalog access for `songs_v2.db`
-- Browser-side persistence reserved for user state like favorites and preferences
-- Manual manifest and service worker placeholders for the future PWA pass
+## Features
 
-## Local Setup
+- Arabic-first RTL interface matching the Android content and catalog.
+- Songs and albums loaded from `public/data/songs_v2.db`.
+- Song and album detail pages with artwork, lyrics, team metadata, favorites, and play counts.
+- Favorites and most-played pages with song/album tabs.
+- Browser-local user state for favorites and listen counts.
+- GitHub Pages deployment from `main`.
 
-1. Install dependencies:
+## Local Development
 
 ```bash
 npm install
-```
-
-2. Extract the Android catalog and copy the `sql.js` wasm runtime:
-
-```bash
-npm run prepare:catalog
-```
-
-This reads `../Tranem/app/src/main/assets/systdefault.zip`, extracts the `.db` file into `public/data/`, and copies `sql-wasm.wasm` into `public/`.
-
-3. Start the app:
-
-```bash
 npm run dev
 ```
 
-## Current Scope
+Useful scripts:
 
-The scaffold currently includes:
+```bash
+npm run build
+npm run lint
+npm run prepare:catalog
+```
 
-- route shell for the main app areas
-- translation setup
-- catalog summary loader against the packaged SQLite database
-- deployment-safe `HashRouter`
-- manual service worker registration
+`npm run prepare:catalog` refreshes the web catalog from the Android asset at `../Tranem/app/src/main/assets/systdefault.zip`, extracts the SQLite database into `public/data/`, and copies `sql-wasm.wasm` into `public/`.
 
-The next implementation milestone is the first vertical slice:
+You can also pass a different zip path:
 
-- songs list backed by SQLite
-- search by song name
-- song detail page
-- web audio playback
+```bash
+npm run prepare:catalog -- /path/to/systdefault.zip
+```
+
+## Catalog Assets
+
+These files are intentionally committed because GitHub Pages serves the static build directly:
+
+- `public/data/songs_v2.db`
+- `public/sql-wasm.wasm`
+
+The database is public once deployed. Do not put private data or secrets in the catalog.
+
+`songs_v2.db` is currently slightly above GitHub's recommended 50 MB single-file size. If it grows much more, move the catalog to a release asset or external static storage and update the fetch URL in `src/lib/catalog/catalog.ts`.
+
+## Deployment
+
+Push to `main` deploys the app through `.github/workflows/deploy-pages.yml`.
+
+The project is configured for the repository URL path:
+
+```ts
+base: '/TranemWeb/'
+```
+
+If the repository name changes, update `vite.config.ts` before deploying.
 
 ## Notes
 
-- `public/data/*.db` is gitignored so the extracted catalog does not get committed by default.
-- `vite-plugin-pwa` was not added yet because the fresh Vite 8 scaffold currently conflicts with that plugin's peer dependency range. The project uses a manual manifest and service worker placeholder for now.
+- `dist/` is generated output and is ignored by git.
+- The app uses `HashRouter`, so deployed routes work on GitHub Pages without a custom 404 rewrite.
+- `package.json` keeps `"private": true` to prevent accidental npm publishing; this does not affect the public GitHub repository.

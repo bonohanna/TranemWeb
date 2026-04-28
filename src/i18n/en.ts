@@ -57,7 +57,10 @@ const en = {
   contributors: {
     loading: 'Loading team member...',
     notFound: 'This name was not found',
+    searchSongsPlaceholder: 'Search songs...',
+    searchAlbumsPlaceholder: 'Search albums...',
     songsCount: '{{count}} songs',
+    albumsCount: '{{count}} albums',
   },
   songDetail: {
     loading: 'Loading song...',

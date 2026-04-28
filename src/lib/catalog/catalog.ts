@@ -227,14 +227,18 @@ function baseAlbumSelect() {
   `
 }
 
-function broadSearchWhereClause() {
+function broadSearchPredicate() {
   return `
-    WHERE :query = ''
+    :query = ''
        OR s.name_norm LIKE :likeQuery
        OR s.words_norm LIKE :likeQuery
        OR si.name_norm LIKE :likeQuery
        OR a.name_norm LIKE :likeQuery
   `
+}
+
+function broadSearchWhereClause() {
+  return `WHERE ${broadSearchPredicate()}`
 }
 
 function advancedSearchPredicate() {
@@ -581,16 +585,23 @@ export async function getContributorName(
 export async function getSongsByContributor(
   type: ContributorType,
   contributorId: number,
+  query = '',
 ): Promise<SongListItem[]> {
   const db = await getCatalogDatabase()
   const config = getContributorConfig(type)
+  const normalizedQuery = normalizeSearch(query)
   const stmt = db.prepare(`
     ${baseSongSelect()}
     WHERE s.${config.songColumn} = :contributorId
+      AND (${broadSearchPredicate()})
     ORDER BY s.is_favorite DESC, s.play_count DESC, s.name ASC
   `)
 
-  stmt.bind({ ':contributorId': contributorId })
+  stmt.bind({
+    ':contributorId': contributorId,
+    ':query': normalizedQuery,
+    ':likeQuery': `%${normalizedQuery}%`,
+  })
 
   const songs: SongListItem[] = []
   while (stmt.step()) {
@@ -599,6 +610,44 @@ export async function getSongsByContributor(
   stmt.free()
 
   return songs
+}
+
+export async function getAlbumsByContributor(
+  type: ContributorType,
+  contributorId: number,
+  query = '',
+): Promise<AlbumListItem[]> {
+  const db = await getCatalogDatabase()
+  const config = getContributorConfig(type)
+  const normalizedQuery = normalizeSearch(query)
+  const stmt = db.prepare(`
+    SELECT a.id,
+           a.name,
+           a.image,
+           a.play_count,
+           a.is_favorite,
+           COUNT(DISTINCT s.id) AS song_count
+    FROM albums a
+    INNER JOIN songs s ON s.album_id = a.id
+    WHERE s.${config.songColumn} = :contributorId
+      AND (:query = '' OR a.name_norm LIKE :likeQuery)
+    GROUP BY a.id, a.name, a.image, a.play_count, a.is_favorite
+    ORDER BY a.is_favorite DESC, a.play_count DESC, a.name ASC
+  `)
+
+  stmt.bind({
+    ':contributorId': contributorId,
+    ':query': normalizedQuery,
+    ':likeQuery': `%${normalizedQuery}%`,
+  })
+
+  const albums: AlbumListItem[] = []
+  while (stmt.step()) {
+    albums.push(toAlbumListItem(stmt.getAsObject()))
+  }
+  stmt.free()
+
+  return albums
 }
 
 export async function getSongsByIds(

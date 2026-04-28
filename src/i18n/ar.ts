@@ -57,7 +57,10 @@ const ar = {
   contributors: {
     loading: 'جارِ تحميل فريق العمل...',
     notFound: 'لم يتم العثور على هذا الاسم',
+    searchSongsPlaceholder: 'ابحث في الترانيم...',
+    searchAlbumsPlaceholder: 'ابحث في الألبومات...',
     songsCount: '{{count}} ترنيمة',
+    albumsCount: '{{count}} ألبوم',
   },
   songDetail: {
     loading: 'جارِ تحميل الترنيمة...',

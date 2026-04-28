@@ -230,13 +230,35 @@ function broadSearchWhereClause() {
   `
 }
 
-function advancedSearchWhereClause() {
+function advancedSearchPredicate() {
   return `
-    WHERE (:songName = '' OR s.name_norm LIKE :songNameLike)
+    (:songName = '' OR s.name_norm LIKE :songNameLike)
       AND (:songWords = '' OR s.words_norm LIKE :songWordsLike)
       AND (:singerName = '' OR si.name_norm LIKE :singerNameLike)
       AND (:albumName = '' OR a.name_norm LIKE :albumNameLike)
   `
+}
+
+function advancedSearchWhereClause() {
+  return `WHERE ${advancedSearchPredicate()}`
+}
+
+function getSongSearchBindings(search: SongSearchParams) {
+  const songName = normalizeSearch(search.songName ?? '')
+  const songWords = normalizeSearch(search.songWords ?? '')
+  const singerName = normalizeSearch(search.singerName ?? '')
+  const albumName = normalizeSearch(search.albumName ?? '')
+
+  return {
+    ':songName': songName,
+    ':songNameLike': `%${songName}%`,
+    ':songWords': songWords,
+    ':songWordsLike': `%${songWords}%`,
+    ':singerName': singerName,
+    ':singerNameLike': `%${singerName}%`,
+    ':albumName': albumName,
+    ':albumNameLike': `%${albumName}%`,
+  }
 }
 
 export async function searchSongs(
@@ -294,20 +316,7 @@ export async function advancedSearchSongs(
   limit = 80,
 ): Promise<SongSearchResult> {
   const db = await getCatalogDatabase()
-  const songName = normalizeSearch(search.songName ?? '')
-  const songWords = normalizeSearch(search.songWords ?? '')
-  const singerName = normalizeSearch(search.singerName ?? '')
-  const albumName = normalizeSearch(search.albumName ?? '')
-  const params = {
-    ':songName': songName,
-    ':songNameLike': `%${songName}%`,
-    ':songWords': songWords,
-    ':songWordsLike': `%${songWords}%`,
-    ':singerName': singerName,
-    ':singerNameLike': `%${singerName}%`,
-    ':albumName': albumName,
-    ':albumNameLike': `%${albumName}%`,
-  }
+  const params = getSongSearchBindings(search)
 
   const countStmt = db.prepare(`
     SELECT COUNT(*) AS total
@@ -342,7 +351,12 @@ export async function advancedSearchSongs(
   stmt.free()
 
   return {
-    query: [songName, songWords, singerName, albumName].filter(Boolean).join(' '),
+    query: [
+      params[':songName'],
+      params[':songWords'],
+      params[':singerName'],
+      params[':albumName'],
+    ].filter(Boolean).join(' '),
     total,
     songs,
   }
@@ -542,6 +556,38 @@ export async function getSongsByIds(
     ...Object.fromEntries(ids.map((id, index) => [`:id${index}`, id])),
     ':query': normalizedQuery,
     ':likeQuery': `%${normalizedQuery}%`,
+  })
+
+  const songs: SongListItem[] = []
+  while (stmt.step()) {
+    songs.push(toSongListItem(stmt.getAsObject()))
+  }
+  stmt.free()
+
+  return songs
+}
+
+export async function getSongsByIdsForSearch(
+  songIds: number[],
+  search: SongSearchParams,
+): Promise<SongListItem[]> {
+  const ids = [...new Set(songIds)].filter((id) => Number.isFinite(id))
+  if (ids.length === 0) {
+    return []
+  }
+
+  const db = await getCatalogDatabase()
+  const idPlaceholders = ids.map((_, index) => `:id${index}`).join(', ')
+  const stmt = db.prepare(`
+    ${baseSongSelect()}
+    WHERE s.id IN (${idPlaceholders})
+      AND ${advancedSearchPredicate()}
+    ORDER BY s.is_favorite DESC, s.play_count DESC, s.name ASC
+  `)
+
+  stmt.bind({
+    ...Object.fromEntries(ids.map((id, index) => [`:id${index}`, id])),
+    ...getSongSearchBindings(search),
   })
 
   const songs: SongListItem[] = []

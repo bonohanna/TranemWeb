@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next'
 import AlbumList from '../components/AlbumList'
 import SearchBox from '../components/SearchBox'
 import {
+  getAlbumsByIds,
   searchAlbums,
   type AlbumListItem,
 } from '../lib/catalog/catalog'
+import { useUserLibraryStore } from '../stores/userLibraryStore'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
@@ -13,6 +15,8 @@ function AlbumsPage() {
   const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const deferredQuery = useDeferredValue(query)
+  const favoriteAlbumIds = useUserLibraryStore((state) => state.favoriteAlbumIds)
+  const albumPlayCounts = useUserLibraryStore((state) => state.albumPlayCounts)
   const [albums, setAlbums] = useState<AlbumListItem[]>([])
   const [status, setStatus] = useState<LoadState>('loading')
   const [error, setError] = useState<string | null>(null)
@@ -23,13 +27,25 @@ function AlbumsPage() {
       setStatus('loading')
       setError(null)
 
-      void searchAlbums(deferredQuery)
-        .then((result) => {
+      const localPlayedAlbumIds = Object.entries(albumPlayCounts)
+        .filter(([, count]) => count > 0)
+        .map(([albumId]) => Number(albumId))
+      const localPriorityAlbumIds = [...favoriteAlbumIds, ...localPlayedAlbumIds]
+
+      void Promise.all([
+        searchAlbums(deferredQuery),
+        getAlbumsByIds(localPriorityAlbumIds, deferredQuery),
+      ])
+        .then(([catalogAlbums, localAlbums]) => {
           if (!active) {
             return
           }
 
-          setAlbums(result)
+          const mergedAlbums = new Map<number, AlbumListItem>()
+          catalogAlbums.forEach((album) => mergedAlbums.set(album.id, album))
+          localAlbums.forEach((album) => mergedAlbums.set(album.id, album))
+
+          setAlbums([...mergedAlbums.values()])
           setStatus('ready')
         })
         .catch((albumError: unknown) => {
@@ -51,7 +67,7 @@ function AlbumsPage() {
       active = false
       window.clearTimeout(timer)
     }
-  }, [deferredQuery, t])
+  }, [albumPlayCounts, deferredQuery, favoriteAlbumIds, t])
 
   return (
     <div className="advanced-search-screen">

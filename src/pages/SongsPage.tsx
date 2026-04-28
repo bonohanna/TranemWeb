@@ -5,8 +5,10 @@ import SearchBox from '../components/SearchBox'
 import SongList from '../components/SongList'
 import {
   advancedSearchSongs,
+  getSongsByIdsForSearch,
   type SongListItem,
 } from '../lib/catalog/catalog'
+import { useUserLibraryStore } from '../stores/userLibraryStore'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
@@ -21,6 +23,8 @@ function SongsPage() {
   const deferredSongWords = useDeferredValue(songWords)
   const deferredSingerName = useDeferredValue(singerName)
   const deferredAlbumName = useDeferredValue(albumName)
+  const favoriteSongIds = useUserLibraryStore((state) => state.favoriteSongIds)
+  const playCounts = useUserLibraryStore((state) => state.playCounts)
   const [songs, setSongs] = useState<SongListItem[]>([])
   const [status, setStatus] = useState<LoadState>('loading')
   const [error, setError] = useState<string | null>(null)
@@ -31,18 +35,31 @@ function SongsPage() {
       setStatus('loading')
       setError(null)
 
-      void advancedSearchSongs({
+      const searchParams = {
         songName: deferredSongName,
         songWords: deferredSongWords,
         singerName: deferredSingerName,
         albumName: deferredAlbumName,
-      })
-        .then((result) => {
+      }
+      const localPlayedSongIds = Object.entries(playCounts)
+        .filter(([, count]) => count > 0)
+        .map(([songId]) => Number(songId))
+      const localPrioritySongIds = [...favoriteSongIds, ...localPlayedSongIds]
+
+      void Promise.all([
+        advancedSearchSongs(searchParams),
+        getSongsByIdsForSearch(localPrioritySongIds, searchParams),
+      ])
+        .then(([result, localSongs]) => {
           if (!active) {
             return
           }
 
-          setSongs(result.songs)
+          const mergedSongs = new Map<number, SongListItem>()
+          result.songs.forEach((song) => mergedSongs.set(song.id, song))
+          localSongs.forEach((song) => mergedSongs.set(song.id, song))
+
+          setSongs([...mergedSongs.values()])
           setStatus('ready')
         })
         .catch((searchError: unknown) => {
@@ -64,7 +81,15 @@ function SongsPage() {
       active = false
       window.clearTimeout(timer)
     }
-  }, [deferredAlbumName, deferredSingerName, deferredSongName, deferredSongWords, t])
+  }, [
+    deferredAlbumName,
+    deferredSingerName,
+    deferredSongName,
+    deferredSongWords,
+    favoriteSongIds,
+    playCounts,
+    t,
+  ])
 
   return (
     <div className="advanced-search-screen">

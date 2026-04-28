@@ -1,0 +1,1121 @@
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --bg-card: #111315;
+  --bg-player: #111315;
+  --nav-background: #0f1113;
+  --nav-active: #d2e4ff;
+  --nav-inactive: #909499;
+  --nav-indicator: #303437;
+  --icon-bg: #2d2f31;
+  --blue-light: #4fc3f7;
+  --blue-dark: #0072ad;
+  --team-purple: #b5a6ff;
+  --team-icon-bg: #1d2024;
+  --green-light: #8bc34a;
+  --red: #ff0000;
+  --font-body: 'Tahoma', 'Segoe UI', sans-serif;
+  color: var(--white);
+  background: var(--nav-background);
+  font: 16px/1.45 var(--font-body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--black);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+audio {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+#root {
+  min-height: 100vh;
+  background: var(--black);
+}
+
+.shell {
+  min-height: 100vh;
+  background: var(--black);
+  padding: 45px 0 96px;
+}
+
+.app-header {
+  position: fixed;
+  z-index: 30;
+  inset: 0 0 auto;
+  display: flex;
+  min-height: 45px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 5px 16px;
+  background: transparent;
+  color: var(--white);
+  font-size: 28px;
+  line-height: 1;
+  text-align: right;
+}
+
+.app-header__brand {
+  direction: rtl;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+}
+
+.app-header__icon {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+}
+
+.shell__main {
+  min-height: calc(100vh - 141px);
+}
+
+.app-nav {
+  position: fixed;
+  z-index: 40;
+  inset: auto 0 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-height: 78px;
+  padding: 8px 4px 6px;
+  border-radius: 28px 28px 0 0;
+  background: var(--nav-background);
+}
+
+.app-nav__link {
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  padding: 4px 2px;
+  border-radius: 20px;
+  color: var(--nav-inactive);
+  font-size: 12px;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.app-nav__indicator {
+  display: inline-flex;
+  width: 64px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  color: currentColor;
+}
+
+.app-nav__link--active {
+  background: var(--nav-indicator);
+  color: var(--nav-active);
+}
+
+.app-nav__link--active .app-nav__indicator {
+  background: transparent;
+}
+
+.advanced-search-screen {
+  min-height: calc(100vh - 141px);
+  padding-bottom: 144px;
+  background: var(--black);
+}
+
+.content-tabs {
+  direction: rtl;
+  display: flex;
+  gap: 8px;
+  padding: 8px 8px 0;
+}
+
+.content-tab {
+  flex: 1;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--nav-inactive);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.content-tab--active {
+  border-bottom-color: var(--nav-indicator);
+  color: var(--white);
+}
+
+.search-panel {
+  position: sticky;
+  z-index: 10;
+  top: 45px;
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  background: var(--black);
+}
+
+.search-box {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-radius: 28px;
+  background: var(--bg-card);
+  color: var(--nav-active);
+}
+
+.search-box input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--white);
+  font-size: 22px;
+  text-align: right;
+}
+
+.search-box input::placeholder {
+  color: var(--nav-inactive);
+  opacity: 1;
+}
+
+.advanced-toggle {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 42px;
+  align-items: center;
+  justify-self: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--nav-indicator);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.advanced-toggle__icon {
+  transform: rotate(90deg);
+}
+
+.advanced-toggle__icon.is-open {
+  transform: rotate(0deg);
+}
+
+.advanced-fields {
+  display: grid;
+  gap: 8px;
+}
+
+.advanced-fields__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.song-list {
+  display: grid;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.song-row {
+  direction: ltr;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 64px;
+  gap: 12px;
+  min-height: 88px;
+  margin: 0 16px;
+  padding: 12px;
+  border-radius: 20px;
+  background: var(--bg-card);
+}
+
+.song-row--loading {
+  opacity: 0.7;
+}
+
+.song-row__main {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  text-align: right;
+}
+
+.song-row__image-link {
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+
+.album-thumb {
+  position: relative;
+  display: inline-flex;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #22252a;
+}
+
+.album-artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album-artwork--placeholder img {
+  filter: brightness(0.35);
+}
+
+.album-artwork__fallback {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-active);
+}
+
+.song-row__main {
+  direction: rtl;
+  min-width: 0;
+  text-align: right;
+}
+
+.song-row__main h2 {
+  margin: 0;
+  overflow: hidden;
+  color: var(--white);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-row__main p {
+  margin: 2px 0 0;
+  overflow: hidden;
+  color: var(--nav-inactive);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-row__meta {
+  display: grid;
+  grid-template-columns: 48px 24px;
+  min-width: 72px;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.song-row__play-count {
+  display: inline-flex;
+  min-width: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--green-light);
+  font-size: 12px;
+}
+
+.album-detail {
+  position: relative;
+  display: grid;
+  gap: 0;
+  min-height: calc(100vh - 141px);
+  overflow: hidden;
+  padding: 24px 24px 320px;
+  background: var(--black);
+}
+
+.album-detail__background {
+  position: fixed;
+  inset: 45px 0 78px;
+  width: 100%;
+  height: calc(100vh - 123px);
+  object-fit: cover;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.album-detail__hero {
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+
+.album-detail__art {
+  position: relative;
+  display: inline-flex;
+  width: min(320px, 100%);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #22252a;
+  color: var(--nav-active);
+}
+
+.album-detail__copy {
+  display: grid;
+  justify-items: center;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.album-detail__copy h1 {
+  margin: 0;
+  color: var(--white);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.album-detail__copy p {
+  margin: 8px 0 0;
+  color: var(--nav-inactive);
+  font-size: 16px;
+}
+
+.album-detail__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.album-detail__songs-section {
+  position: relative;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.album-detail__songs-count {
+  margin: 12px 0 16px;
+  color: var(--green-light);
+  font-size: 14px;
+}
+
+.icon-button {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  color: var(--white);
+}
+
+.icon-button--favorite {
+  color: var(--red);
+}
+
+.empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  color: var(--white);
+}
+
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--nav-active);
+}
+
+.song-detail {
+  position: relative;
+  display: grid;
+  gap: 0;
+  min-height: calc(100vh - 141px);
+  overflow: hidden;
+  padding: 24px 24px 520px;
+  background: var(--black);
+}
+
+.song-detail__background {
+  position: fixed;
+  inset: 45px 0 78px;
+  width: 100%;
+  height: calc(100vh - 123px);
+  object-fit: cover;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.song-detail__top {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0;
+}
+
+.song-art {
+  position: relative;
+  display: flex;
+  width: min(320px, 100%);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #22252a;
+  color: var(--nav-active);
+}
+
+.song-art-link {
+  display: contents;
+}
+
+.song-art img {
+  object-fit: cover;
+}
+
+.song-detail__copy {
+  display: grid;
+  justify-items: center;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.song-detail__album {
+  margin: 0 0 12px;
+  color: var(--team-purple);
+  font-size: 18px;
+}
+
+.song-detail__copy h1 {
+  margin: 0;
+  color: var(--white);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.detail-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-large {
+  display: inline-flex;
+  width: 64px;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 32px;
+  background: transparent;
+  color: var(--white);
+}
+
+.display-play-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--green-light);
+  font-size: 20px;
+}
+
+.action-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.resource-card {
+  display: grid;
+  height: 80px;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--bg-card);
+  color: var(--nav-inactive);
+  font-size: 12px;
+}
+
+.resource-card svg {
+  color: var(--nav-active);
+}
+
+.mini-player-card {
+  position: fixed;
+  z-index: 35;
+  left: 50%;
+  bottom: 96px;
+  display: grid;
+  width: min(520px, calc(100% - 40px));
+  gap: 4px;
+  padding: 12px 16px;
+  border: 1px solid var(--nav-inactive);
+  border-radius: 24px;
+  background: var(--bg-player);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  transform: translateX(-50%);
+}
+
+.mini-player-card__title-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  direction: rtl;
+}
+
+.mini-player-card__title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--blue-light);
+  font-size: 16px;
+  font-weight: 700;
+  direction: ltr;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.mini-player-card__title span {
+  display: inline-block;
+  min-width: max-content;
+  animation: mini-player-title-marquee 12s linear infinite;
+}
+
+@keyframes mini-player-title-marquee {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mini-player-card__title span {
+    animation: none;
+    transform: none;
+  }
+}
+
+.mini-player-card__title-row {
+  overflow: hidden;
+}
+
+.mini-player-card__title,
+.mini-player-card__title span {
+  white-space: nowrap;
+}
+
+.mini-player-card__count {
+  color: var(--white);
+  font-size: 12px;
+}
+
+.mini-player-card__seek {
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  direction: ltr;
+}
+
+.mini-player-card__seek::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--green-light) 0 var(--seek-progress),
+    var(--icon-bg) var(--seek-progress) 100%
+  );
+}
+
+.mini-player-card__seek::-webkit-slider-thumb {
+  width: 0;
+  height: 0;
+  appearance: none;
+}
+
+.mini-player-card__seek::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--icon-bg);
+}
+
+.mini-player-card__seek::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--green-light);
+}
+
+.mini-player-card__seek::-moz-range-thumb {
+  width: 0;
+  height: 0;
+  border: 0;
+}
+
+.mini-player-card__controls {
+  display: grid;
+  grid-template-columns: 24px 32px 48px 32px 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(14px, 7vw, 32px);
+  direction: ltr;
+}
+
+.mini-icon-button,
+.mini-play-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+}
+
+.mini-icon-button {
+  width: 32px;
+  height: 32px;
+  color: var(--white);
+}
+
+.mini-icon-button--favorite {
+  color: var(--red);
+}
+
+.mini-icon-button--repeat {
+  color: var(--green-light);
+}
+
+.mini-play-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background: var(--nav-active);
+  color: #001d36;
+}
+
+.lyrics-section {
+  position: relative;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.section-label {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  color: var(--nav-active);
+}
+
+.section-label span {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.section-label h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.lyrics-section pre {
+  margin: 24px 0 0;
+  color: var(--white);
+  font: inherit;
+  font-size: 20px;
+  line-height: calc(1.45em + 8px);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+.team-card {
+  position: relative;
+  direction: rtl;
+  display: grid;
+  justify-items: start;
+  margin-top: 40px;
+  margin-bottom: 24px;
+  padding: 24px;
+  border-radius: 32px;
+  background: var(--bg-card);
+}
+
+.team-card__title {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  justify-self: start;
+  gap: 12px;
+  margin-bottom: 32px;
+  color: var(--team-purple);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.detail-row {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  gap: 16px;
+  align-items: center;
+  justify-self: start;
+  margin-bottom: 24px;
+}
+
+.detail-row__copy {
+  display: grid;
+  flex: initial;
+  min-width: 0;
+  justify-items: start;
+  text-align: start;
+}
+
+.detail-row span {
+  color: var(--nav-inactive);
+  font-size: 14px;
+}
+
+.detail-row strong {
+  margin-top: 4px;
+  color: var(--white);
+  font-size: 20px;
+}
+
+.detail-row__icon {
+  display: inline-flex;
+  width: 72px;
+  height: 72px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 36px;
+  background: var(--team-icon-bg);
+  color: var(--team-purple) !important;
+}
+
+.page-stack,
+.panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.panel {
+  border-radius: 20px;
+  background: var(--bg-card);
+}
+
+.placeholder-screen {
+  display: grid;
+  min-height: calc(100vh - 141px);
+  place-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.placeholder-screen h1,
+.placeholder-screen p {
+  margin: 0;
+}
+
+.placeholder-screen h1 {
+  color: var(--white);
+  font-size: 28px;
+}
+
+.placeholder-screen p {
+  color: var(--nav-inactive);
+}
+
+@media (min-width: 900px) {
+  .shell {
+    direction: ltr;
+    display: grid;
+    grid-template-areas:
+      "header header"
+      "main nav";
+    grid-template-columns: minmax(0, 1fr) 128px;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 18px;
+    width: min(1280px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 24px 0 32px;
+  }
+
+  .app-header {
+    position: static;
+    grid-area: header;
+    min-height: 52px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--bg-card);
+    font-size: 28px;
+    transform: none;
+  }
+
+  .shell__main {
+    direction: rtl;
+    grid-area: main;
+    min-height: calc(100vh - 126px);
+  }
+
+  .app-nav {
+    direction: rtl;
+    position: sticky;
+    top: 24px;
+    grid-area: nav;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-self: start;
+    gap: 8px;
+    min-height: auto;
+    padding: 14px 8px;
+    border-radius: 28px;
+  }
+
+  .app-nav__link {
+    display: grid;
+    min-height: 72px;
+    place-items: center;
+    padding: 0 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    text-align: right;
+  }
+
+  .app-nav__link--active {
+    background: var(--nav-indicator);
+  }
+
+  .app-nav__link--active .app-nav__indicator {
+    background: transparent;
+  }
+
+  .advanced-search-screen {
+    min-height: 0;
+    padding-bottom: 0;
+  }
+
+  .content-tabs {
+    padding: 0 0 12px;
+  }
+
+  .search-panel {
+    position: sticky;
+    top: 24px;
+    grid-template-columns: minmax(320px, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 28px;
+    background: var(--nav-background);
+  }
+
+  .advanced-toggle {
+    align-self: start;
+    margin-top: 8px;
+  }
+
+  .advanced-fields {
+    grid-column: 1 / -1;
+  }
+
+  .song-list {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 12px;
+    padding-top: 0;
+  }
+
+  .song-row {
+    margin: 0;
+  }
+
+  .album-detail {
+    grid-template-areas:
+      "songs hero"
+      "team hero";
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 18px;
+    min-height: 0;
+    overflow: visible;
+    padding: 0 0 320px;
+  }
+
+  .album-detail__background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .album-detail__hero {
+    grid-area: hero;
+    align-self: start;
+    padding: 24px;
+    border-radius: 32px;
+    background: rgba(17, 19, 21, 0.74);
+  }
+
+  .album-detail__art {
+    width: min(320px, 100%);
+    margin-top: 0;
+  }
+
+  .album-detail__copy {
+    margin-top: 28px;
+  }
+
+  .album-detail__copy h1 {
+    font-size: 32px;
+  }
+
+  .album-detail__songs-section {
+    grid-area: songs;
+    margin-top: 0;
+    padding: 24px;
+    border-radius: 32px;
+    background: rgba(17, 19, 21, 0.58);
+  }
+
+  .album-detail__songs-section .song-list {
+    grid-template-columns: 1fr;
+  }
+
+  .album-detail__team {
+    grid-area: team;
+    margin: 0;
+  }
+
+  .song-detail {
+    grid-template-areas:
+      "lyrics top"
+      "actions top"
+      "team top";
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 18px;
+    min-height: 0;
+    overflow: visible;
+    padding: 0 0 320px;
+  }
+
+  .song-detail__background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .song-detail__top {
+    grid-area: top;
+    align-self: start;
+    padding: 24px;
+    border-radius: 32px;
+    background: rgba(17, 19, 21, 0.74);
+  }
+
+  .song-art {
+    width: min(320px, 100%);
+    margin-top: 0;
+  }
+
+  .song-detail__copy {
+    margin-top: 28px;
+  }
+
+  .song-detail__copy h1 {
+    font-size: 32px;
+  }
+
+  .action-grid {
+    grid-area: actions;
+    align-self: start;
+    margin-top: 0;
+  }
+
+  .android-audio {
+    display: none;
+  }
+
+  .mini-player-card {
+    bottom: 32px;
+    width: min(520px, calc(100% - 320px));
+  }
+
+  .lyrics-section {
+    grid-area: lyrics;
+    margin-top: 0;
+    padding: 24px;
+    border-radius: 32px;
+    background: rgba(17, 19, 21, 0.58);
+  }
+
+  .team-card {
+    grid-area: team;
+    margin: 0;
+  }
+
+  .placeholder-screen {
+    min-height: calc(100vh - 126px);
+    border-radius: 32px;
+    background: var(--bg-card);
+  }
+}
+
+@media (max-width: 420px) {
+  .advanced-fields__row {
+    grid-template-columns: 1fr;
+  }
+
+  .song-detail__copy h1 {
+    font-size: 32px;
+  }
+}

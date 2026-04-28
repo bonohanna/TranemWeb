@@ -1,0 +1,198 @@
+const en = {
+  appName: 'Tranem',
+  shell: {
+    eyebrow: 'Android-to-web migration foundation',
+    title: 'A web shell for Tranem built around the Android app’s real SQLite catalog',
+    subtitle: 'Searchable hymns and playback in the browser',
+    toggleLanguage: 'العربية',
+    sourceSite: 'Current source site',
+    navigation: 'Application navigation',
+    badgesLabel: 'Architecture status',
+    badges: {
+      sqliteFirst: 'SQLite first',
+      hashRouting: 'Hash routing',
+      manualPwa: 'Manual PWA shell',
+    },
+  },
+  nav: {
+    overview: 'Overview',
+    contact: 'Contact',
+    songs: 'Songs',
+    albums: 'Albums',
+    search: 'Advanced Search',
+    favorites: 'Favorites',
+    mostPlayed: 'Most Played',
+    playerLab: 'Playback Lab',
+  },
+  overview: {
+    introLabel: 'Execution direction',
+    introTitle: 'The first goal is to remove technical risk before polishing final screens.',
+    introBody:
+      'The current shell proves the migration path: prepare the catalog from the Android zip asset, load SQLite in the browser, and keep personal state in browser storage only.',
+    catalogTitle: 'Catalog check',
+    catalogLoading: 'Inspecting the local catalog database...',
+    catalogReady: 'The local catalog database is available.',
+    catalogMissing: 'The local catalog file has not been placed under public/data yet.',
+    catalogHelp:
+      'Run npm run prepare:catalog to extract the database from the Android project and copy sql-wasm.wasm.',
+    migrationTitle: 'Migration tracks',
+    migrationPoints: [
+      'Keeping SQLite avoids re-modeling every table and query up front.',
+      'Favorites, play counts, and preferences will live in browser storage instead of mutating the packaged catalog.',
+      'The PWA layer is manual for now so the project can stay on the current Vite 8 scaffold without pinning older tooling.',
+    ],
+    milestoneTitle: 'First vertical slice',
+    milestonePoints: [
+      'Render the songs list from the real catalog database.',
+      'Add fast search by title and lyrics.',
+      'Open a song detail page with audio playback using the current source URLs.',
+      'Lay the groundwork for shared mini-player state and browser favorites.',
+    ],
+    workstreamsTitle: 'Next workstreams',
+  },
+  metrics: {
+    songs: 'Songs',
+    albums: 'Albums',
+    singers: 'Singers',
+    poets: 'Poets',
+    composers: 'Composers',
+    distributers: 'Distributers',
+    featuredSong: 'Reference song',
+  },
+  common: {
+    comingSoon: 'In progress',
+    catalogSource: 'Catalog source',
+    openPath: 'Expected path',
+  },
+  songs: {
+    toolbar: 'Songs library tools',
+    count: '{{count}} results',
+    searchTitle: 'Song title',
+    searchBody: 'Lyrics',
+    advancedSearch: 'Advanced Search',
+    singerName: 'Singer name',
+    albumName: 'Album name',
+    searchPlaceholder: 'Search title, lyrics, singer, or album',
+    clearSearch: 'Clear search',
+    unknownMeta: 'No extra details',
+    localPlays: 'Plays in this browser',
+    addFavorite: 'Add to favorites',
+    removeFavorite: 'Remove from favorites',
+    noResults: 'No results',
+    noResultsHint: 'Try a shorter word or part of the song title.',
+    catalogError: 'Could not open the songs catalog',
+    unknownError: 'Unknown search error.',
+  },
+  albums: {
+    toolbar: 'Albums library tools',
+    searchPlaceholder: 'Search albums...',
+    songsCount: '{{count}} songs',
+    songsList: 'Songs list',
+    addFavorite: 'Add album to favorites',
+    removeFavorite: 'Remove album from favorites',
+    noResults: 'No albums',
+    loading: 'Loading album...',
+    notFound: 'Album not found',
+    catalogError: 'Could not open the albums catalog',
+    unknownError: 'Unknown albums error.',
+  },
+  favorites: {
+    searchSongsPlaceholder: 'Search favorite songs...',
+    searchAlbumsPlaceholder: 'Search favorite albums...',
+    noSongs: 'No favorite songs',
+    noAlbums: 'No favorite albums',
+  },
+  mostPlayed: {
+    searchSongsPlaceholder: 'Search most played songs...',
+    searchAlbumsPlaceholder: 'Search most played albums...',
+    noSongs: 'No played songs yet',
+    noAlbums: 'No played albums yet',
+  },
+  songDetail: {
+    loading: 'Loading song...',
+    notFound: 'Song not found',
+    error: 'Could not load this song',
+    unknownError: 'Unknown song loading error.',
+    backToSongs: 'Back to songs',
+    listen: 'Listen',
+    localPlays: '{{count}} plays in this browser',
+    lyrics: 'Lyrics',
+    noLyrics: 'No lyrics are available for this song.',
+    details: 'Details',
+    team: 'Team',
+    singer: 'Singer',
+    poet: 'Poet',
+    composer: 'Composer',
+    distributer: 'Distributer',
+    share: 'Share',
+    downloadMp3: 'Download mp3',
+    note: 'Music note',
+    chords: 'Chords',
+    pptPicture: 'PowerPoint images',
+    pptWords: 'PowerPoint words',
+  },
+  pages: {
+    songs: {
+      title: 'Songs Library',
+      description:
+        'This page will become the first fully wired screen backed by SQLite, with instant search and a scalable list view.',
+      bullets: [
+        'Match the Android songs and advanced-search queries.',
+        'Add loading, empty, and error states around paged results.',
+        'Link rows into song detail and playback.',
+      ],
+    },
+    albums: {
+      title: 'Albums',
+      description:
+        'The web version will present albums as a searchable library first, then link each album to its songs and artwork.',
+      bullets: [
+        'Read albums directly from SQLite.',
+        'Render album detail with image and locally stored play count.',
+        'Link into detail and filter flows.',
+      ],
+    },
+    search: {
+      title: 'Advanced Search',
+      description:
+        'Advanced search will keep the same core Android fields: song title, lyrics, singer, and album.',
+      bullets: [
+        'Add autocomplete for common names.',
+        'Use debounce behavior similar to the Android app.',
+        'Reuse a single results list across search surfaces.',
+      ],
+    },
+    favorites: {
+      title: 'Favorites',
+      description:
+        'Favorites should not live inside the packaged catalog on the web. They belong in browser storage so each user keeps local state.',
+      bullets: [
+        'Store song ids and album ids in IndexedDB.',
+        'Reuse the same list components with local filtering.',
+        'Leave room for future import/export if sync is needed.',
+      ],
+    },
+    mostPlayed: {
+      title: 'Most Played',
+      description:
+        'Play count on the web will accumulate locally on playback instead of modifying the packaged catalog database.',
+      bullets: [
+        'Persist local play counts per user.',
+        'Merge local ranking with SQLite metadata at render time.',
+        'Add a future settings flow to reset stats.',
+      ],
+    },
+    playerLab: {
+      title: 'Playback Lab',
+      description:
+        'This area is for validating HTML audio and the Media Session API before wiring playback into every screen.',
+      bullets: [
+        'Test mp3 playback from the current taranimarabia source paths.',
+        'Add core controls and a shared mini-player.',
+        'Check background behavior on mobile Safari and Chrome.',
+      ],
+    },
+  },
+} as const
+
+export default en

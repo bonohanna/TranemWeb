@@ -1,5 +1,10 @@
 const CACHE_NAME = 'tranem-web-shell-v2';
-const CORE_ASSETS = ['/', '/manifest.webmanifest', '/app-icon.png'];
+const APP_ROOT = self.registration.scope;
+const CORE_ASSETS = [
+  APP_ROOT,
+  `${APP_ROOT}manifest.webmanifest`,
+  `${APP_ROOT}app-icon.png`,
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -31,7 +36,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(fetch(request).catch(() => caches.match('/')));
+    event.respondWith(fetch(request).catch(() => caches.match(APP_ROOT)));
     return;
   }
 

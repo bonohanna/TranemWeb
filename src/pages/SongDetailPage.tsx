@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Download,
   Heart,
-  Music2,
   Music,
   Pause,
   Play,
@@ -20,6 +19,7 @@ import {
   ANDROID_PLACEHOLDER_URL,
   default as AlbumArtwork,
 } from '../components/AlbumArtwork'
+import TeamDetailRow, { type ContributorLink } from '../components/TeamDetailRow'
 import {
   getAlbumImageUrl,
   getAudioUrl,
@@ -102,6 +102,28 @@ function SongDetailPage() {
   const imageUrl = getAlbumImageUrl(song.albumImage)
   const isFavorite = favoriteSongIds.includes(song.id)
   const totalPlayCount = song.catalogPlayCount + localPlayCount
+  const teamRows = [
+    {
+      label: t('songDetail.singer'),
+      contributors: toContributor('singer', song.singerId, song.singerName),
+    },
+    {
+      label: t('songDetail.poet'),
+      contributors: toContributor('poet', song.poetId, song.poetName),
+    },
+    {
+      label: t('songDetail.composer'),
+      contributors: toContributor('composer', song.composerId, song.composerName),
+    },
+    {
+      label: t('songDetail.distributer'),
+      contributors: toContributor(
+        'distributer',
+        song.distributerId,
+        song.distributerName,
+      ),
+    },
+  ]
   const downloads = [
     { label: t('songDetail.downloadMp3'), path: audioUrl, icon: Download },
     { label: t('songDetail.chords'), path: absoluteFileUrl(song.chordPath), icon: Music },
@@ -218,10 +240,13 @@ function SongDetailPage() {
           <Users size={32} />
           <span>{t('songDetail.team')}</span>
         </div>
-        <DetailRow label={t('songDetail.singer')} value={song.singerName} />
-        <DetailRow label={t('songDetail.poet')} value={song.poetName} />
-        <DetailRow label={t('songDetail.composer')} value={song.composerName} />
-        <DetailRow label={t('songDetail.distributer')} value={song.distributerName} />
+        {teamRows.map((row) => (
+          <TeamDetailRow
+            key={row.label}
+            label={row.label}
+            contributors={row.contributors}
+          />
+        ))}
       </section>
     </article>
   )
@@ -364,31 +389,16 @@ function MiniPlayer({
   )
 }
 
-interface DetailRowProps {
-  label: string
-  value: string | null
-}
-
-function DetailRow({ label, value }: DetailRowProps) {
-  if (!value) {
-    return null
-  }
-
-  return (
-    <div className="detail-row">
-      <span className="detail-row__icon">
-        <Music2 size={28} />
-      </span>
-      <div className="detail-row__copy">
-        <span>{label}</span>
-        <strong>{value}</strong>
-      </div>
-    </div>
-  )
-}
-
 function absoluteFileUrl(path: string | null) {
   return path ? `https://www.taranimarabia.org/${path}` : null
+}
+
+function toContributor(
+  type: ContributorLink['type'],
+  id: number | null,
+  name: string | null,
+): ContributorLink[] {
+  return id && name ? [{ id, name, type }] : []
 }
 
 export default SongDetailPage

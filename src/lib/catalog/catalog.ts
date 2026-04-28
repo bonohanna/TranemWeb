@@ -8,6 +8,11 @@ export interface SongListItem {
   name: string
   lyricsPreview: string | null
   audioPath: string | null
+  singerId: number | null
+  albumId: number | null
+  poetId: number | null
+  composerId: number | null
+  distributerId: number | null
   singerName: string | null
   albumName: string | null
   albumImage: string | null
@@ -33,11 +38,6 @@ export interface SongDetails extends SongListItem {
   notePath: string | null
   pptPicturePath: string | null
   pptWordPath: string | null
-  singerId: number | null
-  albumId: number | null
-  poetId: number | null
-  composerId: number | null
-  distributerId: number | null
   poetName: string | null
   composerName: string | null
   distributerName: string | null
@@ -55,6 +55,8 @@ export interface SongSearchParams {
   singerName?: string
   albumName?: string
 }
+
+export type ContributorType = 'singer' | 'poet' | 'composer' | 'distributer'
 
 export const expectedCatalogPath = `${import.meta.env.BASE_URL}data/songs_v2.db`
 
@@ -153,6 +155,11 @@ function toSongListItem(row: Record<string, unknown>): SongListItem {
     name: asString(row.name),
     lyricsPreview: lyrics ? lyrics.replace(/\s+/g, ' ').slice(0, 140) : null,
     audioPath: asNullableString(row.audio_mp3),
+    singerId: asNullableNumber(row.singer_id),
+    albumId: asNullableNumber(row.album_id),
+    poetId: asNullableNumber(row.poet_id),
+    composerId: asNullableNumber(row.composer_id),
+    distributerId: asNullableNumber(row.distributer_id),
     singerName: asNullableString(row.singer_name),
     albumName: asNullableString(row.album_name),
     albumImage: asNullableString(row.album_image),
@@ -258,6 +265,19 @@ function getSongSearchBindings(search: SongSearchParams) {
     ':singerNameLike': `%${singerName}%`,
     ':albumName': albumName,
     ':albumNameLike': `%${albumName}%`,
+  }
+}
+
+function getContributorConfig(type: ContributorType) {
+  switch (type) {
+    case 'singer':
+      return { table: 'singers', songColumn: 'singer_id' }
+    case 'poet':
+      return { table: 'poets', songColumn: 'poet_id' }
+    case 'composer':
+      return { table: 'composers', songColumn: 'composer_id' }
+    case 'distributer':
+      return { table: 'distributers', songColumn: 'distributer_id' }
   }
 }
 
@@ -533,6 +553,54 @@ export async function getSongsByAlbumId(
   return songs
 }
 
+export async function getContributorName(
+  type: ContributorType,
+  contributorId: number,
+): Promise<string | null> {
+  const db = await getCatalogDatabase()
+  const config = getContributorConfig(type)
+  const stmt = db.prepare(`
+    SELECT name
+    FROM ${config.table}
+    WHERE id = :contributorId
+    LIMIT 1
+  `)
+
+  stmt.bind({ ':contributorId': contributorId })
+
+  if (!stmt.step()) {
+    stmt.free()
+    return null
+  }
+
+  const name = asNullableString(stmt.getAsObject().name)
+  stmt.free()
+  return name
+}
+
+export async function getSongsByContributor(
+  type: ContributorType,
+  contributorId: number,
+): Promise<SongListItem[]> {
+  const db = await getCatalogDatabase()
+  const config = getContributorConfig(type)
+  const stmt = db.prepare(`
+    ${baseSongSelect()}
+    WHERE s.${config.songColumn} = :contributorId
+    ORDER BY s.is_favorite DESC, s.play_count DESC, s.name ASC
+  `)
+
+  stmt.bind({ ':contributorId': contributorId })
+
+  const songs: SongListItem[] = []
+  while (stmt.step()) {
+    songs.push(toSongListItem(stmt.getAsObject()))
+  }
+  stmt.free()
+
+  return songs
+}
+
 export async function getSongsByIds(
   songIds: number[],
   query = '',
@@ -683,11 +751,6 @@ export async function getSongById(songId: number): Promise<SongDetails | null> {
     notePath: asNullableString(row.song_note),
     pptPicturePath: asNullableString(row.song_pptpicture),
     pptWordPath: asNullableString(row.song_pptword),
-    singerId: asNullableNumber(row.singer_id),
-    albumId: asNullableNumber(row.album_id),
-    poetId: asNullableNumber(row.poet_id),
-    composerId: asNullableNumber(row.composer_id),
-    distributerId: asNullableNumber(row.distributer_id),
     poetName: asNullableString(row.poet_name),
     composerName: asNullableString(row.composer_name),
     distributerName: asNullableString(row.distributer_name),

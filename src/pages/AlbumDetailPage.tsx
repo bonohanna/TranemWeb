@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Heart, Music2, Play, Users } from 'lucide-react'
+import { Heart, Play, Users } from 'lucide-react'
 import {
   ANDROID_PLACEHOLDER_URL,
   default as AlbumArtwork,
 } from '../components/AlbumArtwork'
 import SongList from '../components/SongList'
+import TeamDetailRow, { type ContributorLink } from '../components/TeamDetailRow'
 import {
   getAlbumById,
   getAlbumImageUrl,
@@ -92,15 +93,44 @@ function AlbumDetailPage() {
   const isFavorite = album.catalogIsFavorite || favoriteAlbumIds.includes(album.id)
   const totalPlayCount = album.catalogPlayCount + (albumPlayCounts[album.id] ?? 0)
   const teamRows = [
-    { label: t('songDetail.singer'), value: uniqueNames(songs.map((song) => song.singerName)) },
-    { label: t('songDetail.poet'), value: uniqueNames(songs.map((song) => song.poetName)) },
-    { label: t('songDetail.composer'), value: uniqueNames(songs.map((song) => song.composerName)) },
+    {
+      label: t('songDetail.singer'),
+      contributors: uniqueContributors(
+        songs,
+        'singer',
+        (song) => song.singerId,
+        (song) => song.singerName,
+      ),
+    },
+    {
+      label: t('songDetail.poet'),
+      contributors: uniqueContributors(
+        songs,
+        'poet',
+        (song) => song.poetId,
+        (song) => song.poetName,
+      ),
+    },
+    {
+      label: t('songDetail.composer'),
+      contributors: uniqueContributors(
+        songs,
+        'composer',
+        (song) => song.composerId,
+        (song) => song.composerName,
+      ),
+    },
     {
       label: t('songDetail.distributer'),
-      value: uniqueNames(songs.map((song) => song.distributerName)),
+      contributors: uniqueContributors(
+        songs,
+        'distributer',
+        (song) => song.distributerId,
+        (song) => song.distributerName,
+      ),
     },
   ]
-  const hasTeam = teamRows.some((row) => row.value)
+  const hasTeam = teamRows.some((row) => row.contributors.length > 0)
 
   return (
     <article className="album-detail">
@@ -169,7 +199,11 @@ function AlbumDetailPage() {
             <span>{t('songDetail.team')}</span>
           </div>
           {teamRows.map((row) => (
-            <DetailRow key={row.label} label={row.label} value={row.value} />
+            <TeamDetailRow
+              key={row.label}
+              label={row.label}
+              contributors={row.contributors}
+            />
           ))}
         </section>
       ) : null}
@@ -177,32 +211,24 @@ function AlbumDetailPage() {
   )
 }
 
-interface DetailRowProps {
-  label: string
-  value: string | null
-}
+function uniqueContributors(
+  songs: SongListItem[],
+  type: ContributorLink['type'],
+  getId: (song: SongListItem) => number | null,
+  getName: (song: SongListItem) => string | null,
+) {
+  const contributors = new Map<number, ContributorLink>()
 
-function DetailRow({ label, value }: DetailRowProps) {
-  if (!value) {
-    return null
-  }
+  songs.forEach((song) => {
+    const id = getId(song)
+    const name = getName(song)
 
-  return (
-    <div className="detail-row">
-      <span className="detail-row__icon">
-        <Music2 size={28} />
-      </span>
-      <div className="detail-row__copy">
-        <span>{label}</span>
-        <strong>{value}</strong>
-      </div>
-    </div>
-  )
-}
+    if (id && name && !contributors.has(id)) {
+      contributors.set(id, { id, name, type })
+    }
+  })
 
-function uniqueNames(values: Array<string | null>) {
-  const names = [...new Set(values.filter(Boolean))]
-  return names.length > 0 ? names.join('، ') : null
+  return [...contributors.values()]
 }
 
 export default AlbumDetailPage

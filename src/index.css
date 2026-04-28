@@ -830,6 +830,25 @@ button {
   font-size: 20px;
 }
 
+.detail-row__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 4px;
+}
+
+.detail-row__link {
+  color: var(--white);
+  font-size: 20px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.detail-row__link:hover,
+.detail-row__link:focus-visible {
+  color: var(--team-purple);
+}
+
 .detail-row__icon {
   display: inline-flex;
   width: 72px;
@@ -839,6 +858,41 @@ button {
   border-radius: 36px;
   background: var(--team-icon-bg);
   color: var(--team-purple) !important;
+}
+
+.contributor-screen {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.contributor-hero {
+  direction: rtl;
+  display: grid;
+  justify-items: start;
+  margin: 8px 16px 4px;
+  padding: 24px;
+  border-radius: 28px;
+  background: var(--bg-card);
+}
+
+.contributor-hero__label {
+  color: var(--team-purple);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.contributor-hero h1 {
+  margin: 8px 0 0;
+  color: var(--white);
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.contributor-hero p {
+  margin: 10px 0 0;
+  color: var(--nav-inactive);
+  font-size: 15px;
 }
 
 @media (min-width: 900px) {
@@ -907,6 +961,10 @@ button {
   .advanced-search-screen {
     min-height: 0;
     padding-bottom: 0;
+  }
+
+  .contributor-hero {
+    margin: 0 0 4px;
   }
 
   .content-tabs {

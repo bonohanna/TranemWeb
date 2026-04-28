@@ -54,6 +54,11 @@ const ar = {
     noSongs: 'لا توجد ترانيم مستمع إليها بعد',
     noAlbums: 'لا توجد ألبومات مستمع إليها بعد',
   },
+  contributors: {
+    loading: 'جارِ تحميل فريق العمل...',
+    notFound: 'لم يتم العثور على هذا الاسم',
+    songsCount: '{{count}} ترنيمة',
+  },
   songDetail: {
     loading: 'جارِ تحميل الترنيمة...',
     notFound: 'لم يتم العثور على الترنيمة',

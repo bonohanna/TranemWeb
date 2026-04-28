@@ -3,6 +3,7 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from './components/AppShell'
 import AlbumDetailPage from './pages/AlbumDetailPage'
 import AlbumsPage from './pages/AlbumsPage'
+import ContributorSongsPage from './pages/ContributorSongsPage'
 import FavoritesPage from './pages/FavoritesPage'
 import MostPlayedPage from './pages/MostPlayedPage'
 import SongDetailPage from './pages/SongDetailPage'
@@ -23,6 +24,7 @@ function App() {
           <Route path="/songs/:songId" element={<SongDetailPage />} />
           <Route path="/albums" element={<AlbumsPage />} />
           <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
+          <Route path="/contributors/:type/:contributorId" element={<ContributorSongsPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/most-played" element={<MostPlayedPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

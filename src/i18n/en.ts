@@ -54,6 +54,11 @@ const en = {
     noSongs: 'No played songs yet',
     noAlbums: 'No played albums yet',
   },
+  contributors: {
+    loading: 'Loading team member...',
+    notFound: 'This name was not found',
+    songsCount: '{{count}} songs',
+  },
   songDetail: {
     loading: 'Loading song...',
     notFound: 'Song not found',
